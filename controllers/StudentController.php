@@ -18,7 +18,7 @@ use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
 
-class BookingController extends ApiController
+class StudentController extends ApiController
 {
 
     /**
@@ -64,19 +64,25 @@ class BookingController extends ApiController
     {
         $username = $this->getBodyValue('username', true);
         $password=$this->getBodyValue('password',true);
-        $student= DsHocSinh::findOne(['MaHocSinh'=>$username,'MatKhau'=>$password]);
-        if($student!=null)
+        if($password==""||$username=="")
         {
-            $response['code']=0;
-            $response['data']['key']='ok';
 
+            return $this->response(400,[
+                'message'=>'Thiếu tham số'
+            ]);
         }
-        else
-        {
-            $response['code']=1;
-            $response['data']['key']='fail';
+        else {
+            $student = DsHocSinh::findOne(['MaHocSinh' => $username, 'MatKhau' => $password]);
+            if ($student != null) {
+                $response['code'] = 0;
+                $response['data']['key'] = 'ok';
+
+            } else {
+                $response['code'] = 1;
+                $response['data']['key'] = 'fail';
+            }
+          return  $this->response(200, $response);
         }
-        $this->response(200,$response);
     }
 
 
